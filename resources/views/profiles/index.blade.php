@@ -22,7 +22,7 @@
                 @if($profile->status == "Pendente")
                 <form action="{{ route('profiles.approveProfile', $profile->id) }}" method="POST">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
                     <button type="submit" class="btn btn-primary">Aprovar</button>
                 </form>
                 @else
