@@ -65,7 +65,24 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-        //
+        $fields = [
+            'name' => ['name' => 'Nome'],
+            'email' => ['name' => 'E-mail', 'type' => 'email'],
+            'father_name' => ['name' => 'Nome do pai'],
+            'mother_name' => ['name' => 'Nome da mãe'],
+            'date_of_birth' => ['name' => 'Data de nascimento', 'type' => 'date'],
+            'register' => ['name' => 'Matrícula'],
+            'address' => ['name' => 'Endereço'],
+            'cpf' => ['name' => 'CPF'],
+            'rg' => ['name' => 'RG'],
+            'contact' => ['name' => 'Contato'],
+            'photo' => ['name' => 'Foto'],
+            'role_FK' => ['name' => 'Papel'],
+        ];
+
+        $profile = Profile::findOrFail($id);
+
+        return view('edit', ['profile' => $profile]);
     }
 
     /**

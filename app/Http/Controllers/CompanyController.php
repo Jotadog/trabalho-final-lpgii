@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class CompanyController extends Controller
@@ -17,7 +15,7 @@ class CompanyController extends Controller
 
     public function index()
     {
-        $companies = DB::table('companies')->get();
+        $companies = Company::all();
 
         $fields = [
             'id' => '#',
@@ -27,10 +25,10 @@ class CompanyController extends Controller
         ];
 
         return view('index', [
-            'fields' => $fields, 
-            'data' => $companies, 
-            'controller' => 'companies', 
-            'title' => 'Empresas'
+            'fields' => $fields,
+            'data' => $companies,
+            'controller' => 'companies',
+            'title' => 'Empresas',
         ]);
     }
 
@@ -67,37 +65,37 @@ class CompanyController extends Controller
     public function show($id)
     {
         $fields = [
-            'id' => [ 'name' => '#' ],
-            'name' => [ 'name' => 'Nome' ],
-            'address' => [ 'name' => 'Endereço' ],
-            'phone' => [ 'name' => 'Telefone' ],
-            'email' => [ 'name' => 'E-mail', 'type' => 'email' ],
-            'cnpj' => [ 'name' => 'CNPJ' ],
+            'id' => ['name' => '#'],
+            'name' => ['name' => 'Nome'],
+            'address' => ['name' => 'Endereço'],
+            'phone' => ['name' => 'Telefone'],
+            'email' => ['name' => 'E-mail', 'type' => 'email'],
+            'cnpj' => ['name' => 'CNPJ'],
         ];
 
         return view('show', [
-            'fields' => $fields, 
+            'fields' => $fields,
             'datum' => Company::findOrFail($id),
-            'controller' => 'companies', 
-            'title' => 'Visualizar Empresa'
+            'controller' => 'companies',
+            'title' => 'Visualizar Empresa',
         ]);
     }
 
     public function edit($id)
     {
         $fields = [
-            'name' => [ 'name' => 'Nome' ],
-            'address' => [ 'name' => 'Endereço' ],
-            'phone' => [ 'name' => 'Telefone' ],
-            'email' => [ 'name' => 'E-mail', 'type' => 'email' ],
-            'cnpj' => [ 'name' => 'CNPJ' ],
+            'name' => ['name' => 'Nome'],
+            'address' => ['name' => 'Endereço'],
+            'phone' => ['name' => 'Telefone'],
+            'email' => ['name' => 'E-mail', 'type' => 'email'],
+            'cnpj' => ['name' => 'CNPJ'],
         ];
 
         return view('edit', [
-            'fields' => $fields, 
+            'fields' => $fields,
             'datum' => Company::findOrFail($id),
-            'controller' => 'companies', 
-            'title' => 'Editar Empresa'
+            'controller' => 'companies',
+            'title' => 'Editar Empresa',
         ]);
     }
 

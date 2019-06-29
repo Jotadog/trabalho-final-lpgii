@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class SetSessionData
+class VerifyRole
 {
     /**
      * Handle an incoming request.
@@ -15,12 +15,10 @@ class SetSessionData
      */
     public function handle($request, Closure $next)
     {
-        session([
-            'profile' => [
-                'idUser' => auth()->user()->id,
-            ],
-        ]);
-        // dd(auth()->user()->id);
+        if (auth()->user()->profile->role->name == 'pendente') {
+            return redirect("profiles/" . auth()->user()->profile->id . "/edit");
+        }
+
         return $next($request);
     }
 }
