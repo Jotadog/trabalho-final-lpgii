@@ -21,6 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('users', 'UserController');
 Route::resource('companies', 'CompanyController');
+Route::resource('evaluationGroups', 'EvaluationGroupController');
 
 Route::resource('profiles', 'ProfileController');
 Route::put('/approveProfile/{profile}', 'ProfileController@approveProfile')->name('profiles.approveProfile');
