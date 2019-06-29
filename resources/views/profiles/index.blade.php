@@ -27,7 +27,7 @@
                 </form>
                 @else
                 <button type="submit" class="btn btn-success"
-                    onclick="return alert('Esse cara ja foi aprovado, seu animal')">Aprovado</button>
+                    onclick="return alert('Esse cara ja foi aprovado, seu corno')">Aprovado</button>
                 @endif
             </td>
         </tr>

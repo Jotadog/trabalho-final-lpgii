@@ -45,6 +45,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('profiles.index') }}">Perfis</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('companies.index') }}">Empresas</a>
+                        </li>
                         @endauth
                     </ul>
 
