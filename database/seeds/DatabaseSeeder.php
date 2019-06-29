@@ -23,10 +23,6 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'name' => 'orientador'
-            ],
-            [
-                'id' => 5,
                 'name' => 'professor'
             ],
             [
@@ -127,7 +123,7 @@ class DatabaseSeeder extends Seeder
                 'contact' => '35370505',
                 'photo' => 'professor1.png',
                 'status' => 'Aprovado',
-                'role_FK' => 5
+                'role_FK' => 3
             ],
             [
                 'id' => 5,
@@ -142,7 +138,7 @@ class DatabaseSeeder extends Seeder
                 'contact' => '35370506',
                 'photo' => 'professor2.png',
                 'status' => 'Aprovado',
-                'role_FK' => 5
+                'role_FK' => 3
             ]
         ]);
 
@@ -169,7 +165,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id' => 1,
                 'appraiser1_FK' => 4,
-                'advisor_FK' => 2,
+                'advisor_FK' => 3,
                 'appraiser2_FK' => 5,
                 'advisor_note' => 10,
                 'defense_date' => '2019-06-29',

@@ -14,6 +14,7 @@
         </tr>
     </thead>
     <tbody>
+    
         @foreach ($data as $datum)
         <tr>
             @foreach ($fields as $key => $field)

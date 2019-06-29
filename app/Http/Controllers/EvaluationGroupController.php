@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\EvaluationGroup;
+use App\Profile;
+use App\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class EvaluationGroupController extends Controller
@@ -17,20 +18,31 @@ class EvaluationGroupController extends Controller
 
     public function index()
     {
-        $evaluationGroups = DB::table('evaluation_groups')->get();
+        $evaluationGroups = EvaluationGroup::all();
 
         $fields = [
             'id' => '#',
-            'advisor_FK' => 'Orientador',
-            'appraiser1_FK' => 'Professor 1',
-            'appraiser2_FK' => 'Professor 2',
-            'profile_FK' => 'Aluno',
+            'advisor' => 'Orientador',
+            'appraiser1' => 'Professor 1',
+            'appraiser2' => 'Professor 2',
+            'profile' => 'Aluno',
             'status' => 'Status'
         ];
 
+        $newEvaluationGroups = [];
+        foreach($evaluationGroups as $value)
+            array_push($newEvaluationGroups, (object) [
+                'id' => $value['id'],
+                'advisor' => $value['advisor']['user']['name'],
+                'appraiser1' => $value['appraiser1']['user']['name'],
+                'appraiser2' => $value['appraiser2']['user']['name'],
+                'profile' => $value['profile']['user']['name'],
+                'status' => $value['status']
+            ]);
+
         return view('index', [
             'fields' => $fields, 
-            'data' => $evaluationGroups, 
+            'data' => $newEvaluationGroups, 
             'controller' => 'evaluationGroups', 
             'title' => 'Bancas'
         ]);
@@ -38,91 +50,224 @@ class EvaluationGroupController extends Controller
 
     public function create()
     {
+        $companies = Company::all();
+        $profiles = Profile::where(['role_FK' => 3])->get();
+        $profilesStudent = Profile::where(['role_FK' => 2])->get();
+
         $fields = [
-            'name' => ['name' => 'Nome'],
-            'address' => ['name' => 'Endereço'],
-            'phone' => ['name' => 'Telefone'],
-            'email' => ['name' => 'E-mail', 'type' => 'email'],
-            'cnpj' => ['name' => 'CNPJ'],
+            'advisor_FK' => ['name' => 'Orientador', 'select' => 'true'],
+            'appraiser1_FK' => ['name' => 'Professor 1', 'select' => 'true'],
+            'appraiser2_FK' => ['name' => 'Professor 2', 'select' => 'true'],
+            'company_FK' => ['name' => 'Empresa', 'select' => 'true'],
+            'profile_FK' => ['name' => 'Aluno', 'select' => 'true'],
+            'status' => ['name' => 'Status'],
+            'advisor_note' => ['name' => 'Nota Orientador'],
+            'defense_date' => ['name' => 'Data de defesa', 'type' => 'date'],
+            'report_path' => ['name' => 'Relatório', 'type' => 'file'],
+            'appraiser_note1' => ['name' => 'Nota Professor 1'],
+            'appraiser_note2' => ['name' => 'Nota Professor 2'],
         ];
 
+        $newProfiles = [];
+        $newCompanies = [];
+        $newProfilesStudent = [];
+
+        foreach($profiles as $value)
+            array_push($newProfiles, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);
+
+        foreach($companies as $value)
+            array_push($newCompanies, [ 'name' => $value['name'], 'value' => $value['id'] ]);
+        
+        foreach($profilesStudent as $value)
+            array_push($newProfilesStudent, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);        
+
+        $datum = [
+            'advisor_FK' => $newProfiles,
+            'appraiser1_FK' => $newProfiles,
+            'appraiser2_FK' => $newProfiles,
+            'company_FK' => $newCompanies,
+            'profile_FK' => $newProfilesStudent
+        ];
+        
         return view('create', [
             'fields' => $fields,
             'controller' => 'evaluationGroups',
+            'datum' => $datum,
             'title' => 'Registrar Banca',
         ]);
     }
 
     public function store(Request $request)
     {
-        $status = Company::create($request->all());
+        $status = EvaluationGroup::create($request->all());
 
         if ($status) {
-            Session::flash('success', 'Empresa alterada com sucesso!');
-            return redirect('companies');
+            Session::flash('success', 'Banca alterada com sucesso!');
+            return redirect('evaluationGroup');
         }
 
-        Session::flash('error', 'Ocorreu um erro ao alterar a empresa!');
-        return view('companies.create');
+        Session::flash('error', 'Ocorreu um erro ao alterar a banca!');
+        return view('evaluationGroup.create');
     }
 
     public function show($id)
     {
+        $evaluationGroup = EvaluationGroup::findOrFail($id);
+        
         $fields = [
-            'id' => [ 'name' => '#' ],
-            'name' => [ 'name' => 'Nome' ],
-            'address' => [ 'name' => 'Endereço' ],
-            'phone' => [ 'name' => 'Telefone' ],
-            'email' => [ 'name' => 'E-mail', 'type' => 'email' ],
-            'cnpj' => [ 'name' => 'CNPJ' ],
+            'advisor_FK' => ['name' => 'Orientador', 'select' => 'true'],
+            'appraiser1_FK' => ['name' => 'Professor 1', 'select' => 'true'],
+            'appraiser2_FK' => ['name' => 'Professor 2', 'select' => 'true'],
+            'company_FK' => ['name' => 'Empresa', 'select' => 'true'],
+            'profile_FK' => ['name' => 'Aluno', 'select' => 'true'],
+            'status' => ['name' => 'Status'],
+            'advisor_note' => ['name' => 'Nota Orientador'],
+            'defense_date' => ['name' => 'Data de defesa', 'type' => 'date'],
+            'report_path' => ['name' => 'Relatório'],
+            'appraiser_note1' => ['name' => 'Nota Professor 1'],
+            'appraiser_note2' => ['name' => 'Nota Professor 2'],
+        ];
+
+        $datum = (object) [
+            'appraiser1_FK' => $evaluationGroup['appraiser1']['user']['name'],
+            'appraiser2_FK' => $evaluationGroup['appraiser2']['user']['name'],
+            'advisor_FK' => $evaluationGroup['advisor']['user']['name'],
+            'advisor_note' => $evaluationGroup['advisor_note'],
+            'defense_date' => $evaluationGroup['defense_date'],
+            'status' => $evaluationGroup['status'],
+            'report_path' => $evaluationGroup['report_path'],
+            'appraiser_note1' => $evaluationGroup['appraiser_note1'],
+            'appraiser_note2' => $evaluationGroup['appraiser_note2'],
+            'company_FK' => $evaluationGroup['company']['name'],
+            'profile_FK' => $evaluationGroup['profile']['user']['name']
         ];
 
         return view('show', [
             'fields' => $fields, 
-            'datum' => Company::findOrFail($id),
+            'datum' => $datum,
             'controller' => 'evaluationGroups', 
-            'title' => 'Visualizar Empresa'
+            'title' => 'Visualizar Banca'
         ]);
     }
 
     public function edit($id)
     {
+        $evaluationGroup = EvaluationGroup::findOrFail($id);
+        $companies = Company::all();
+        $profiles = Profile::where(['role_FK' => 3])->get();
+        $profilesStudent = Profile::where(['role_FK' => 2])->get();
+
         $fields = [
-            'name' => [ 'name' => 'Nome' ],
-            'address' => [ 'name' => 'Endereço' ],
-            'phone' => [ 'name' => 'Telefone' ],
-            'email' => [ 'name' => 'E-mail', 'type' => 'email' ],
-            'cnpj' => [ 'name' => 'CNPJ' ],
+            'advisor_FK' => ['name' => 'Orientador', 'select' => 'true'],
+            'appraiser1_FK' => ['name' => 'Professor 1', 'select' => 'true'],
+            'appraiser2_FK' => ['name' => 'Professor 2', 'select' => 'true'],
+            'company_FK' => ['name' => 'Empresa', 'select' => 'true'],
+            'profile_FK' => ['name' => 'Aluno', 'select' => 'true'],
+            'status' => ['name' => 'Status'],
+            'advisor_note' => ['name' => 'Nota Orientador'],
+            'defense_date' => ['name' => 'Data de defesa', 'type' => 'date'],
+            'report_path' => ['name' => 'Relatório', 'type' => 'file'],
+            'appraiser_note1' => ['name' => 'Nota Professor 1'],
+            'appraiser_note2' => ['name' => 'Nota Professor 2'],
+        ];
+
+        $appraiser1 = [];
+        $appraiser2 = [];
+        $advisor = [];
+        $newCompanies = [];
+        $newProfilesStudent = [];
+
+        foreach($profiles as $key => $value){
+            if($key == 0){
+                array_push($appraiser1, [
+                    'name' => $evaluationGroup['appraiser1']['user']['name'], 
+                    'value' => $evaluationGroup['appraiser1']['user_FK'] ]
+                );
+                array_push($appraiser2, [
+                    'name' => $evaluationGroup['appraiser2']['user']['name'], 
+                    'value' => $evaluationGroup['appraiser2']['user_FK'] ]
+                );
+                array_push($advisor, [
+                    'name' => $evaluationGroup['advisor']['user']['name'], 
+                    'value' => $evaluationGroup['advisor']['user_FK'] ]
+                );
+            }
+
+            if($appraiser1[0]['value'] != $value['user_FK'])
+                array_push($appraiser1, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);
+            if($appraiser2[0]['value'] != $value['user_FK'])
+                array_push($appraiser2, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);
+            if($advisor[0]['value'] != $value['user_FK'])
+                array_push($advisor, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);
+        }
+
+        foreach($companies as $key => $value){
+            if($key == 0){
+                array_push($newCompanies, [
+                    'name' => $evaluationGroup['company']['name'], 
+                    'value' => $evaluationGroup['company_FK'] ]
+                );
+            }
+
+            if($newCompanies[0]['value'] != $value['id'])
+                array_push($newCompanies, [ 'name' => $value['name'], 'value' => $value['id'] ]);
+        }
+
+        foreach($profilesStudent as $key => $value){
+            if($key == 0){
+                array_push($newProfilesStudent, [
+                    'name' => $evaluationGroup['profile']['user']['name'], 
+                    'value' => $evaluationGroup['profile_FK'] ]
+                );
+            }
+
+            if($newProfilesStudent[0]['value'] != $value['id'])
+                array_push($newProfilesStudent, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);        
+        }
+
+        $datum = (object) [
+            'id' => $id,
+            'appraiser1_FK' => $appraiser1,
+            'appraiser2_FK' => $appraiser2,
+            'advisor_FK' => $advisor,
+            'advisor_note' => $evaluationGroup['advisor_note'],
+            'defense_date' => $evaluationGroup['defense_date'],
+            'status' => $evaluationGroup['status'],
+            'report_path' => $evaluationGroup['report_path'],
+            'appraiser_note1' => $evaluationGroup['appraiser_note1'],
+            'appraiser_note2' => $evaluationGroup['appraiser_note2'],
+            'company_FK' => $newCompanies,
+            'profile_FK' => $newProfilesStudent
         ];
 
         return view('edit', [
             'fields' => $fields, 
-            'datum' => Company::findOrFail($id),
+            'datum' => $datum,
             'controller' => 'evaluationGroups', 
-            'title' => 'Editar Empresa'
+            'title' => 'Editar Banca'
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $company = Company::findOrFail($id);
+        $evaluationGroup = EvaluationGroup::findOrFail($id);
 
-        $status = $company->update($request->all());
+        $status = $evaluationGroup->update($request->all());
 
         if ($status) {
-            Session::flash('success', 'Empresa alterada com sucesso!');
-            return redirect('companies');
+            Session::flash('success', 'Banca alterada com sucesso!');
+            return redirect('evaluationGroups');
         }
 
-        Session::flash('error', 'Ocorreu um erro ao alterar a empresa!');
-        return view('companies.edit', ['company' => $company]);
+        Session::flash('error', 'Ocorreu um erro ao alterar a banca!');
+        return view('evaluationGroups.edit', ['evaluationGroup' => $evaluationGroup]);
     }
 
     public function destroy($id)
     {
-        Company::destroy($id);
-        Session::flash('success', 'Empresa excluída com sucesso!');
+        EvaluationGroup::destroy($id);
+        Session::flash('success', 'Banca excluída com sucesso!');
 
-        return redirect('companies');
+        return redirect('evaluationGroups');
     }
 }

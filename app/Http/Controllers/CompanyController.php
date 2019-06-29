@@ -16,7 +16,7 @@ class CompanyController extends Controller
     public function index()
     {
         $companies = Company::all();
-
+        
         $fields = [
             'id' => '#',
             'name' => 'Nome',
