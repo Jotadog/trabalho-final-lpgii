@@ -1,7 +1,7 @@
 @extends('layouts.card')
 @section('cardBody')
 @section('title', $title)
-<form method="POST" action="{{ route($controller.'.store', $datum->id) }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route($controller.'.store') }}" enctype="multipart/form-data">
     @csrf
     @method("POST")
     @foreach ($fields as $key => $value)
@@ -17,6 +17,9 @@
             <button type="submit" class="btn btn-primary">
                 Registrar
             </button>
+            <a class="btn btn-primary" href="{{ route($controller.'.index') }}">
+                Voltar
+            </a>
         </div>
     </div>
 </form>

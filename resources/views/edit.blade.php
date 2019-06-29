@@ -17,6 +17,9 @@
             <button type="submit" class="btn btn-primary">
                 Editar
             </button>
+            <a class="btn btn-primary" href="{{ route($controller.'.index') }}">
+                Voltar
+            </a>
         </div>
     </div>
 </form>
