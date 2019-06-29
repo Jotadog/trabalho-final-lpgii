@@ -20,4 +20,19 @@ class Internship extends Model
     {
         return $this->hasOne('App\Profile');
     }
+
+    protected $fillable = [
+        'id',
+        'appraiser1_FK',
+        'advisor_FK',
+        'appraiser2_FK',
+        'advisor_note',
+        'defense_date',
+        'status',
+        'report_path',
+        'appraiser_note1',
+        'appraiser_note2',
+        'company_FK',
+        'user_FK'
+    ];
 }

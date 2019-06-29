@@ -29,8 +29,8 @@ class CreateEvaluationGroupsTable extends Migration
             $table->string('appraiser_note2');
             $table->bigInteger('company_FK')->unsigned();
             $table->foreign('company_FK')->references('id')->on('companies');
-            $table->bigInteger('user_FK')->unsigned();;
-            $table->foreign('user_FK')->references('id')->on('profiles');
+            $table->bigInteger('profile_FK')->unsigned();;
+            $table->foreign('profile_FK')->references('id')->on('profiles');
             $table->timestamps();
         });
     }

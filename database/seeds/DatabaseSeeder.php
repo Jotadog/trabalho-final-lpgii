@@ -178,7 +178,7 @@ class DatabaseSeeder extends Seeder
                 'appraiser_note1' => 9,
                 'appraiser_note2' => 8,
                 'company_FK' => 1,
-                'user_FK' => 2
+                'profile_FK' => 2
             ]
         ]);
 

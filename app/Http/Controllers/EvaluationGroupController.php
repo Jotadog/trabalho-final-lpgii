@@ -24,7 +24,7 @@ class EvaluationGroupController extends Controller
             'advisor_FK' => 'Orientador',
             'appraiser1_FK' => 'Professor 1',
             'appraiser2_FK' => 'Professor 2',
-            'user_FK' => 'Aluno',
+            'profile_FK' => 'Aluno',
             'status' => 'Status'
         ];
 
@@ -48,8 +48,8 @@ class EvaluationGroupController extends Controller
 
         return view('create', [
             'fields' => $fields,
-            'controller' => 'companies',
-            'title' => 'Registrar Empresa',
+            'controller' => 'evaluationGroups',
+            'title' => 'Registrar Banca',
         ]);
     }
 
@@ -80,7 +80,7 @@ class EvaluationGroupController extends Controller
         return view('show', [
             'fields' => $fields, 
             'datum' => Company::findOrFail($id),
-            'controller' => 'companies', 
+            'controller' => 'evaluationGroups', 
             'title' => 'Visualizar Empresa'
         ]);
     }
@@ -98,7 +98,7 @@ class EvaluationGroupController extends Controller
         return view('edit', [
             'fields' => $fields, 
             'datum' => Company::findOrFail($id),
-            'controller' => 'companies', 
+            'controller' => 'evaluationGroups', 
             'title' => 'Editar Empresa'
         ]);
     }
