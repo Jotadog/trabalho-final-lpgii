@@ -24,4 +24,4 @@ Route::resource('companies', 'CompanyController');
 Route::resource('evaluationGroups', 'EvaluationGroupController');
 
 Route::resource('profiles', 'ProfileController');
-Route::put('/approveProfile/{profile}', 'ProfileController@approveProfile')->name('profiles.approveProfile');
+Route::patch('/approveProfile/{profile}', 'ProfileController@approveProfile')->name('profiles.approveProfile');

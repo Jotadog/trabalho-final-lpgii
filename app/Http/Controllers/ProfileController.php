@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -65,24 +66,9 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-        $fields = [
-            'name' => ['name' => 'Nome'],
-            'email' => ['name' => 'E-mail', 'type' => 'email'],
-            'father_name' => ['name' => 'Nome do pai'],
-            'mother_name' => ['name' => 'Nome da mãe'],
-            'date_of_birth' => ['name' => 'Data de nascimento', 'type' => 'date'],
-            'register' => ['name' => 'Matrícula'],
-            'address' => ['name' => 'Endereço'],
-            'cpf' => ['name' => 'CPF'],
-            'rg' => ['name' => 'RG'],
-            'contact' => ['name' => 'Contato'],
-            'photo' => ['name' => 'Foto'],
-            'role_FK' => ['name' => 'Papel'],
-        ];
-
         $profile = Profile::findOrFail($id);
 
-        return view('edit', ['profile' => $profile]);
+        return view('profiles.edit', ['profile' => $profile]);
     }
 
     /**
@@ -94,7 +80,19 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $path = Storage::putFile('photos', $request->photo);
+
+        $profile = Profile::findOrFail($id);
+
+        $status = $profile->update($request->all());
+
+        if ($status) {
+            session()->flash('success', 'Perfil alterado com sucesso!');
+            return redirect('profiles');
+        }
+
+        session()->flash('error', 'Ocorreu um erro ao alterar o perfil!');
+        return view('profiles.edit', ['profile' => $profile]);
     }
 
     /**
