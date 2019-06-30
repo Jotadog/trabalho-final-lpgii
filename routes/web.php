@@ -22,6 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('users', 'UserController');
 Route::resource('companies', 'CompanyController');
 Route::resource('evaluationGroups', 'EvaluationGroupController');
+Route::resource('internships', 'InternshipController');
 
 Route::resource('profiles', 'ProfileController');
 Route::patch('/approveProfile/{profile}', 'ProfileController@approveProfile')->name('profiles.approveProfile');

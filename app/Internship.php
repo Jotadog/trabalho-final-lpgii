@@ -8,31 +8,28 @@ class Internship extends Model
 {
     public function profile()
     {
-        return $this->hasOne('App\Profile');
+        return $this->belongsTo('App\Profile', 'profile_FK', 'user_FK');
     }
 
     public function company()
     {
-        return $this->hasOne('App\Company');
+        return $this->belongsTo('App\Company', 'company_FK', 'id');
     }
 
     public function advisor()
     {
-        return $this->hasOne('App\Profile');
+        return $this->belongsTo('App\Profile', 'advisor_FK', 'id');
     }
 
     protected $fillable = [
         'id',
-        'appraiser1_FK',
-        'advisor_FK',
-        'appraiser2_FK',
-        'advisor_note',
-        'defense_date',
-        'status',
-        'report_path',
-        'appraiser_note1',
-        'appraiser_note2',
+        'profile_FK',
+        'supervisor_name',
         'company_FK',
-        'user_FK'
+        'supervisor_phone',
+        'supervisor_email',
+        'start_date',
+        'end_date',
+        'advisor_FK'
     ];
 }

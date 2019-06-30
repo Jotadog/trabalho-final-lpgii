@@ -49,6 +49,9 @@
                             <a class="nav-link" href="{{ route('companies.index') }}">Empresas</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('internships.index') }}">Estágios</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('evaluationGroups.index') }}">Bancas</a>
                         </li>
                         @endauth

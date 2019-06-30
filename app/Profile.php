@@ -10,6 +10,11 @@ class Profile extends Model
 
     protected $primaryKey = 'id';
 
+    public function role()
+    {
+        return $this->belongsTo('App\Role', 'role_FK', 'id');
+    }
+
     protected $fillable = [
         'id',
         'user_FK',
@@ -29,10 +34,5 @@ class Profile extends Model
     public function user()
     {
         return $this->belongsTo('App\User', 'user_FK', 'id');
-    }
-
-    public function role()
-    {
-        return $this->belongsTo('App\Role', 'role_FK', 'id');
     }
 }
