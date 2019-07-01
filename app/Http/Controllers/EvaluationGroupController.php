@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Company;
 use App\EvaluationGroup;
 use App\Profile;
-use App\Company;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class EvaluationGroupController extends Controller
@@ -14,6 +13,7 @@ class EvaluationGroupController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('finishRegister');
     }
 
     public function index()
@@ -26,25 +26,26 @@ class EvaluationGroupController extends Controller
             'appraiser1' => 'Professor 1',
             'appraiser2' => 'Professor 2',
             'profile' => 'Aluno',
-            'status' => 'Status'
+            'status' => 'Status',
         ];
 
         $newEvaluationGroups = [];
-        foreach($evaluationGroups as $value)
+        foreach ($evaluationGroups as $value) {
             array_push($newEvaluationGroups, (object) [
                 'id' => $value['id'],
                 'advisor' => $value['advisor']['user']['name'],
                 'appraiser1' => $value['appraiser1']['user']['name'],
                 'appraiser2' => $value['appraiser2']['user']['name'],
                 'profile' => $value['profile']['user']['name'],
-                'status' => $value['status']
+                'status' => $value['status'],
             ]);
+        }
 
         return view('index', [
-            'fields' => $fields, 
-            'data' => $newEvaluationGroups, 
-            'controller' => 'evaluationGroups', 
-            'title' => 'Bancas'
+            'fields' => $fields,
+            'data' => $newEvaluationGroups,
+            'controller' => 'evaluationGroups',
+            'title' => 'Bancas',
         ]);
     }
 
@@ -72,23 +73,26 @@ class EvaluationGroupController extends Controller
         $newCompanies = [];
         $newProfilesStudent = [];
 
-        foreach($profiles as $value)
-            array_push($newProfiles, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);
+        foreach ($profiles as $value) {
+            array_push($newProfiles, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
+        }
 
-        foreach($companies as $value)
-            array_push($newCompanies, [ 'name' => $value['name'], 'value' => $value['id'] ]);
-        
-        foreach($profilesStudent as $value)
-            array_push($newProfilesStudent, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);        
+        foreach ($companies as $value) {
+            array_push($newCompanies, ['name' => $value['name'], 'value' => $value['id']]);
+        }
+
+        foreach ($profilesStudent as $value) {
+            array_push($newProfilesStudent, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
+        }
 
         $datum = [
             'advisor_FK' => $newProfiles,
             'appraiser1_FK' => $newProfiles,
             'appraiser2_FK' => $newProfiles,
             'company_FK' => $newCompanies,
-            'profile_FK' => $newProfilesStudent
+            'profile_FK' => $newProfilesStudent,
         ];
-        
+
         return view('create', [
             'fields' => $fields,
             'controller' => 'evaluationGroups',
@@ -113,7 +117,7 @@ class EvaluationGroupController extends Controller
     public function show($id)
     {
         $evaluationGroup = EvaluationGroup::findOrFail($id);
-        
+
         $fields = [
             'advisor_FK' => ['name' => 'Orientador', 'select' => 'true'],
             'appraiser1_FK' => ['name' => 'Professor 1', 'select' => 'true'],
@@ -139,14 +143,14 @@ class EvaluationGroupController extends Controller
             'appraiser_note1' => $evaluationGroup['appraiser_note1'],
             'appraiser_note2' => $evaluationGroup['appraiser_note2'],
             'company_FK' => $evaluationGroup['company']['name'],
-            'profile_FK' => $evaluationGroup['profile']['user']['name']
+            'profile_FK' => $evaluationGroup['profile']['user']['name'],
         ];
 
         return view('show', [
-            'fields' => $fields, 
+            'fields' => $fields,
             'datum' => $datum,
-            'controller' => 'evaluationGroups', 
-            'title' => 'Visualizar Banca'
+            'controller' => 'evaluationGroups',
+            'title' => 'Visualizar Banca',
         ]);
     }
 
@@ -177,52 +181,62 @@ class EvaluationGroupController extends Controller
         $newCompanies = [];
         $newProfilesStudent = [];
 
-        foreach($profiles as $key => $value){
-            if($key == 0){
+        foreach ($profiles as $key => $value) {
+            if ($key == 0) {
                 array_push($appraiser1, [
-                    'name' => $evaluationGroup['appraiser1']['user']['name'], 
-                    'value' => $evaluationGroup['appraiser1']['user_FK'] ]
+                    'name' => $evaluationGroup['appraiser1']['user']['name'],
+                    'value' => $evaluationGroup['appraiser1']['user_FK']]
                 );
                 array_push($appraiser2, [
-                    'name' => $evaluationGroup['appraiser2']['user']['name'], 
-                    'value' => $evaluationGroup['appraiser2']['user_FK'] ]
+                    'name' => $evaluationGroup['appraiser2']['user']['name'],
+                    'value' => $evaluationGroup['appraiser2']['user_FK']]
                 );
                 array_push($advisor, [
-                    'name' => $evaluationGroup['advisor']['user']['name'], 
-                    'value' => $evaluationGroup['advisor']['user_FK'] ]
+                    'name' => $evaluationGroup['advisor']['user']['name'],
+                    'value' => $evaluationGroup['advisor']['user_FK']]
                 );
             }
 
-            if($appraiser1[0]['value'] != $value['user_FK'])
-                array_push($appraiser1, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);
-            if($appraiser2[0]['value'] != $value['user_FK'])
-                array_push($appraiser2, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);
-            if($advisor[0]['value'] != $value['user_FK'])
-                array_push($advisor, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);
+            if ($appraiser1[0]['value'] != $value['user_FK']) {
+                array_push($appraiser1, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
+            }
+
+            if ($appraiser2[0]['value'] != $value['user_FK']) {
+                array_push($appraiser2, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
+            }
+
+            if ($advisor[0]['value'] != $value['user_FK']) {
+                array_push($advisor, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
+            }
+
         }
 
-        foreach($companies as $key => $value){
-            if($key == 0){
+        foreach ($companies as $key => $value) {
+            if ($key == 0) {
                 array_push($newCompanies, [
-                    'name' => $evaluationGroup['company']['name'], 
-                    'value' => $evaluationGroup['company_FK'] ]
+                    'name' => $evaluationGroup['company']['name'],
+                    'value' => $evaluationGroup['company_FK']]
                 );
             }
 
-            if($newCompanies[0]['value'] != $value['id'])
-                array_push($newCompanies, [ 'name' => $value['name'], 'value' => $value['id'] ]);
+            if ($newCompanies[0]['value'] != $value['id']) {
+                array_push($newCompanies, ['name' => $value['name'], 'value' => $value['id']]);
+            }
+
         }
 
-        foreach($profilesStudent as $key => $value){
-            if($key == 0){
+        foreach ($profilesStudent as $key => $value) {
+            if ($key == 0) {
                 array_push($newProfilesStudent, [
-                    'name' => $evaluationGroup['profile']['user']['name'], 
-                    'value' => $evaluationGroup['profile_FK'] ]
+                    'name' => $evaluationGroup['profile']['user']['name'],
+                    'value' => $evaluationGroup['profile_FK']]
                 );
             }
 
-            if($newProfilesStudent[0]['value'] != $value['id'])
-                array_push($newProfilesStudent, [ 'name' => $value['user']['name'], 'value' => $value['user_FK'] ]);        
+            if ($newProfilesStudent[0]['value'] != $value['id']) {
+                array_push($newProfilesStudent, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
+            }
+
         }
 
         $datum = (object) [
@@ -237,14 +251,14 @@ class EvaluationGroupController extends Controller
             'appraiser_note1' => $evaluationGroup['appraiser_note1'],
             'appraiser_note2' => $evaluationGroup['appraiser_note2'],
             'company_FK' => $newCompanies,
-            'profile_FK' => $newProfilesStudent
+            'profile_FK' => $newProfilesStudent,
         ];
 
         return view('edit', [
-            'fields' => $fields, 
+            'fields' => $fields,
             'datum' => $datum,
-            'controller' => 'evaluationGroups', 
-            'title' => 'Editar Banca'
+            'controller' => 'evaluationGroups',
+            'title' => 'Editar Banca',
         ]);
     }
 

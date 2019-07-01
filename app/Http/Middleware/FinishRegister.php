@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class VerifyRole
+class FinishRegister
 {
     /**
      * Handle an incoming request.
@@ -15,6 +15,10 @@ class VerifyRole
      */
     public function handle($request, Closure $next)
     {
+        if (auth()->user()->profile->status == 'Pendente') {
+            return redirect("profiles/" . auth()->user()->profile->id . "/edit");
+        }
+
         return $next($request);
     }
 }

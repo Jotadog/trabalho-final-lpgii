@@ -12,31 +12,32 @@ class CompanyController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('finishRegister');
     }
 
     public function index()
     {
         $result = DB::table('companies')
-                    ->select('companies.*', DB::raw('count(users.id) as quantity'))
-                    ->leftJoin('internships', 'companies.id', '=', 'internships.company_FK')
-                    ->leftJoin('profiles', 'internships.profile_FK', '=', 'profiles.id')
-                    ->leftJoin('users', 'profiles.user_FK', '=', 'users.id')
-                    ->groupBy('companies.id')
-                    ->get();
-        
+            ->select('companies.*', DB::raw('count(users.id) as quantity'))
+            ->leftJoin('internships', 'companies.id', '=', 'internships.company_FK')
+            ->leftJoin('profiles', 'internships.profile_FK', '=', 'profiles.id')
+            ->leftJoin('users', 'profiles.user_FK', '=', 'users.id')
+            ->groupBy('companies.id')
+            ->get();
+
         $fields = [
             'id' => '#',
             'name' => 'Nome',
             'cnpj' => 'CNPJ',
             'email' => 'E-mail',
-            'quantity' => 'Qtd. Alunos'
+            'quantity' => 'Qtd. Alunos',
         ];
 
         return view('index', [
             'fields' => $fields,
             'data' => $result,
             'controller' => 'companies',
-            'title' => 'Empresas'
+            'title' => 'Empresas',
         ]);
     }
 
