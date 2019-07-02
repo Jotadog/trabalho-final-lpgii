@@ -13,6 +13,4 @@ class Company extends Model
         'email',
         'cnpj',
     ];
-
-    
 }

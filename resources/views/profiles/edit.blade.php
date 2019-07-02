@@ -92,7 +92,7 @@
             <button type="submit" class="btn btn-primary">
                 Editar
             </button>
-            <a class="btn btn-primary" href="{{ route('home') }}">
+            <a class="btn btn-secondary" href="{{ route('home') }}">
                 Voltar
             </a>
         </div>

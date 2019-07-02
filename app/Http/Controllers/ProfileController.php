@@ -12,6 +12,7 @@ class ProfileController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('finishRegister')->except('edit');
+        $this->middleware('authorizeEditing')->only('edit');
     }
 
     /**

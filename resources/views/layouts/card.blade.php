@@ -4,7 +4,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">@yield('title')</div>
+                <div class="card-header d-flex align-items-center justify-content-between">@yield('title')</div>
 
                 <div class="card-body">
                     @include('partials._messages')
