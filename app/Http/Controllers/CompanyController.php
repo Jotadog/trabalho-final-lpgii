@@ -6,6 +6,7 @@ use App\Company;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller
 {
@@ -48,7 +49,7 @@ class CompanyController extends Controller
             'address' => ['name' => 'Endereço'],
             'phone' => ['name' => 'Telefone'],
             'email' => ['name' => 'E-mail', 'type' => 'email'],
-            'cnpj' => ['name' => 'CNPJ'],
+            'cnpj' => ['name' => 'CNPJ']
         ];
 
         return view('create', [
@@ -60,6 +61,19 @@ class CompanyController extends Controller
 
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:191',
+            'address' => 'required|max:191',
+            'phone' => 'required|max:191',
+            'email' => 'required|max:191',
+            'cnpj' => 'required|max:191' 
+        ]);
+
+        if($validator->fails()) {
+            Session::flash('error', 'Ocorreu um erro ao alterar a empresa!');
+            return redirect('companies/create');
+        }
+
         $status = Company::create($request->all());
 
         if ($status) {
@@ -68,7 +82,7 @@ class CompanyController extends Controller
         }
 
         Session::flash('error', 'Ocorreu um erro ao alterar a empresa!');
-        return view('companies.create');
+        return redirect('companies/create');
     }
 
     public function show($id)
@@ -112,6 +126,19 @@ class CompanyController extends Controller
     {
         $company = Company::findOrFail($id);
 
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:191',
+            'address' => 'required|max:191',
+            'phone' => 'required|max:191',
+            'email' => 'required|max:191',
+            'cnpj' => 'required|max:191'
+        ]);
+
+        if($validator->fails()) {
+            Session::flash('error', 'Ocorreu um erro ao alterar a empresa!');
+            return redirect('companies/edit');
+        }
+
         $status = $company->update($request->all());
 
         if ($status) {
@@ -120,7 +147,7 @@ class CompanyController extends Controller
         }
 
         Session::flash('error', 'Ocorreu um erro ao alterar a empresa!');
-        return view('companies.edit', ['company' => $company]);
+        return redirect('companies/edit', ['company' => $company]);
     }
 
     public function destroy($id)

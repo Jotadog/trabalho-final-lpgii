@@ -7,6 +7,7 @@ use App\EvaluationGroup;
 use App\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class EvaluationGroupController extends Controller
 {
@@ -103,15 +104,34 @@ class EvaluationGroupController extends Controller
 
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'appraiser1_FK' => 'required|numeric',
+            'appraiser2_FK' => 'required|numeric',
+            'advisor_FK' => 'required|numeric',
+            'advisor_note' => 'required|max:191',
+            'defense_date' => 'required|max:191',
+            'status' => 'required|max:191',
+            'report_path' => 'required|max:191',
+            'appraiser_note1' => 'required|max:191',
+            'appraiser_note2' => 'required|max:191',
+            'company_FK' => 'required|numeric',
+            'profile_FK' => 'required|numeric',
+        ]);
+
+        if($validator->fails()) {
+            Session::flash('error', 'Ocorreu um erro ao alterar a banca!');
+            return redirect('evaluationGroup/create');
+        }
+        
         $status = EvaluationGroup::create($request->all());
 
         if ($status) {
-            Session::flash('success', 'Banca alterada com sucesso!');
+            Session::flash('success', 'Banca cadastrada com sucesso!');
             return redirect('evaluationGroup');
         }
 
-        Session::flash('error', 'Ocorreu um erro ao alterar a banca!');
-        return view('evaluationGroup.create');
+        Session::flash('error', 'Ocorreu um erro ao cadastrar a banca!');
+        return redirect('evaluationGroup/create');
     }
 
     public function show($id)
@@ -266,6 +286,25 @@ class EvaluationGroupController extends Controller
     {
         $evaluationGroup = EvaluationGroup::findOrFail($id);
 
+        $validator = Validator::make($request->all(), [
+            'appraiser1_FK' => 'required|numeric',
+            'appraiser2_FK' => 'required|numeric',
+            'advisor_FK' => 'required|numeric',
+            'advisor_note' => 'required|max:191',
+            'defense_date' => 'required|max:191',
+            'status' => 'required|max:191',
+            'report_path' => 'required|max:191',
+            'appraiser_note1' => 'required|max:191',
+            'appraiser_note2' => 'required|max:191',
+            'company_FK' => 'required|numeric',
+            'profile_FK' => 'required|numeric',
+        ]);
+
+        if($validator->fails()) {
+            Session::flash('error', 'Ocorreu um erro ao alterar a banca!');
+            return redirect('evaluationGroup/edit');
+        }
+
         $status = $evaluationGroup->update($request->all());
 
         if ($status) {
@@ -274,7 +313,7 @@ class EvaluationGroupController extends Controller
         }
 
         Session::flash('error', 'Ocorreu um erro ao alterar a banca!');
-        return view('evaluationGroups.edit', ['evaluationGroup' => $evaluationGroup]);
+        return redirect('evaluationGroups/edit', ['evaluationGroup' => $evaluationGroup]);
     }
 
     public function destroy($id)

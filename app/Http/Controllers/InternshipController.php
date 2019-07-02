@@ -7,6 +7,7 @@ use App\Internship;
 use App\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class InternshipController extends Controller
 {
@@ -98,6 +99,22 @@ class InternshipController extends Controller
 
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'profile_FK' => 'required|numeric',
+            'supervisor_name' => 'required|max:191',
+            'company_FK' => 'required|numeric',
+            'supervisor_phone' => 'required|max:191',
+            'supervisor_email' => 'required|max:191',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'advisor_FK' => 'required|numeric'
+        ]);
+
+        if($validator->fails()) {
+            Session::flash('error', 'Ocorreu um erro ao alterar o estágio!');
+            return redirect('internships/create');
+        }
+
         $status = Internship::create($request->all());
 
         if ($status) {
@@ -106,7 +123,7 @@ class InternshipController extends Controller
         }
 
         Session::flash('error', 'Ocorreu um erro ao alterar o estágio!');
-        return view('internships.create');
+        return redirect('internships/create');
     }
 
     public function show($id)
@@ -231,6 +248,22 @@ class InternshipController extends Controller
     {
         $internship = Internship::findOrFail($id);
 
+        $validator = Validator::make($request->all(), [
+            'profile_FK' => 'required|numeric',
+            'supervisor_name' => 'required|max:191',
+            'company_FK' => 'required|numeric',
+            'supervisor_phone' => 'required|max:191',
+            'supervisor_email' => 'required|max:191',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'advisor_FK' => 'required|numeric'
+        ]);
+
+        if($validator->fails()) {
+            Session::flash('error', 'Ocorreu um erro ao alterar o estágio!');
+            return redirect('internships/create');
+        }
+
         $status = $internship->update($request->all());
 
         if ($status) {
@@ -239,7 +272,7 @@ class InternshipController extends Controller
         }
 
         Session::flash('error', 'Ocorreu um erro ao alterar o estágio!');
-        return view('internships.edit', ['internship' => $internship]);
+        return redirect('internships./edit', ['internship' => $internship]);
     }
 
     public function destroy($id)
