@@ -11,7 +11,7 @@ class ProfileController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('finishRegister')->except('edit');
+        $this->middleware('finishRegister')->except(['edit', 'update']);
         $this->middleware('authorizeEditing')->only('edit');
     }
 
@@ -57,7 +57,9 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        //
+        $profile = Profile::findOrFail($id);
+
+        return view('show');
     }
 
     /**
@@ -90,7 +92,7 @@ class ProfileController extends Controller
 
         if ($status) {
             session()->flash('success', 'Perfil alterado com sucesso!');
-            return redirect('profiles');
+            return redirect('home');
         }
 
         session()->flash('error', 'Ocorreu um erro ao alterar o perfil!');

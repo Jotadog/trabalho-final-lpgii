@@ -15,7 +15,10 @@ class FinishRegister
      */
     public function handle($request, Closure $next)
     {
-        if (auth()->user()->profile->status == 'Pendente') {
+        if (auth()->user()->profile->role->name == 'pendente' && auth()->user()->profile->status == 'Pendente') {
+            auth()->logout();
+            return redirect('/')->with('error', 'Seu perfil ainda não foi aprovado!');
+        } else if (auth()->user()->profile->role->name == 'pendente' && auth()->user()->profile->status == 'Aprovado') {
             return redirect("profiles/" . auth()->user()->profile->id . "/edit");
         }
 

@@ -80,10 +80,9 @@
     <div class="form-group row">
         <label for="role" class="col-md-3 col-form-label text-md-right">Papel</label>
         <div class="col-md-9">
-            <select class="form-control" name="role" id="role">
+            <select class="form-control" name="role_FK" id="role">
                 <option value="2" {{ $profile->role->id == 2 ? "selected" : "" }}>Estudante</option>
-                <option value="3" {{ $profile->role->id == 3 ? "selected" : "" }}>Orientador</option>
-                <option value="5" {{ $profile->role->id == 5 ? "selected" : "" }}>Professor</option>
+                <option value="3" {{ $profile->role->id == 3 ? "selected" : "" }}>Professor</option>
             </select>
         </div>
     </div>

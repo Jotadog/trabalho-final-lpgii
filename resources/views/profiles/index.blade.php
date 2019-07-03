@@ -9,6 +9,7 @@
                 <th scope="col">Nome</th>
                 <th scope="col">E-mail</th>
                 <th scope="col">Status do perfil</th>
+                <th scope="col">Ver perfil</th>
                 <th scope="col">Aprovar</th>
             </tr>
         </thead>
@@ -19,6 +20,11 @@
                 <td>{{ $profile->user->name }}</td>
                 <td>{{ $profile->user->email }}</td>
                 <td>{{ $profile->status }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ route('profile.show', $profile->id) }}">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </td>
                 <td>
                     @if($profile->status == "Pendente")
                     <form action="{{ route('profiles.approveProfile', $profile->id) }}" method="POST">
