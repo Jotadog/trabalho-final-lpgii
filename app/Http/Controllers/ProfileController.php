@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Profile;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -117,16 +118,21 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $path = Storage::putFile('photos', $request->file('photo'));
+        $values = $request->all();
+
+        if ($request->file('photo')) {
+            $path = Storage::putFile('photos', $request->file('photo'));
+            $values['photo'] = $path;
+        }
 
         $profile = Profile::findOrFail($id);
+        // $user = User::findOrFail($profile->user->id);
 
-        $values = $request->all();
-        $values['photo'] = $path;
+        $statusUser = $profile->user()->update($values);
 
-        $status = $profile->update($values);
+        $statusProfile = $profile->update($values);
 
-        if ($status) {
+        if ($statusUser && $statusProfile) {
             session()->flash('success', 'Perfil alterado com sucesso!');
             return redirect('home');
         }
