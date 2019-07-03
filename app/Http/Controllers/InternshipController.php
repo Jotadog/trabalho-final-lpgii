@@ -74,7 +74,7 @@ class InternshipController extends Controller
             'supervisor_name' => ['name' => 'Nome Supervisor'],
             'company_FK' => ['name' => 'Empresa', 'select' => 'true'],
             'supervisor_phone' => ['name' => 'Telefone Supervisor'],
-            'supervisor_email' => ['name' => 'Email Supervisor'],
+            'supervisor_email' => ['name' => 'Email Supervisor', 'type' => 'email'],
             'start_date' => ['name' => 'Data Início', 'type' => 'date'],
             'end_date' => ['name' => 'Data Fim', 'type' => 'date'],
             'advisor_FK' => ['name' => 'Orientador', 'select' => 'true'],

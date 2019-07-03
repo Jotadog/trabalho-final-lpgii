@@ -31,6 +31,11 @@ class EvaluationGroup extends Model
         return $this->belongsTo('App\Profile', 'profile_FK', 'id');
     }
 
+    public function internship()
+    {
+        return $this->belongsTo('App\Internship', 'internship_FK', 'id');
+    }
+
     protected $fillable = [
         'appraiser1_FK',
         'appraiser2_FK',
@@ -42,6 +47,7 @@ class EvaluationGroup extends Model
         'appraiser_note1',
         'appraiser_note2',
         'company_FK',
-        'profile_FK'
+        'profile_FK',
+        'internship_FK'
     ];
 }
