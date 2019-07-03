@@ -18,7 +18,6 @@ class CompanyController extends Controller
 
     public function index()
     {
-        $evaluationGroups;
         $role = auth()->user()->profile->role->name; 
         $id = auth()->user()->profile->id;
 
