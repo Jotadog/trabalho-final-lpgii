@@ -21,7 +21,7 @@
                 <td>{{ $profile->user->email }}</td>
                 <td>{{ $profile->status }}</td>
                 <td>
-                    <a class="btn btn-info" href="{{ route('profile.show', $profile->id) }}">
+                    <a class="btn btn-info" href="{{ route('profiles.show', $profile->id) }}">
                         <i class="fas fa-eye"></i>
                     </a>
                 </td>

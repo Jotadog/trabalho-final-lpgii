@@ -59,7 +59,40 @@ class ProfileController extends Controller
     {
         $profile = Profile::findOrFail($id);
 
-        return view('show');
+        $fields = [
+            'name' => ['name' => 'name'],
+            'email' => ['name' => 'email'],
+            'father_name' => ['name' => 'father_name'],
+            'mother_name' => ['name' => 'mother_name'],
+            'date_of_birth' => ['name' => 'date_of_birth', 'type' => 'date'],
+            'register' => ['name' => 'register'],
+            'address' => ['name' => 'address'],
+            'cpf' => ['name' => 'cpf'],
+            'rg' => ['name' => 'rg'],
+            'contact' => ['name' => 'contact'],
+            'role' => ['name' => 'role'],
+        ];
+
+        $datum = (object) [
+            'name' => $profile->user->name,
+            'email' => $profile->user->email,
+            'father_name' => $profile->father_name,
+            'mother_name' => $profile->mother_name,
+            'date_of_birth' => $profile->date_of_birth,
+            'register' => $profile->register,
+            'address' => $profile->address,
+            'cpf' => $profile->cpf,
+            'rg' => $profile->rg,
+            'contact' => $profile->contact,
+            'role' => $profile->role->name,
+        ];
+
+        return view('show', [
+            'fields' => $fields,
+            'datum' => $datum,
+            'controller' => 'profiles',
+            'title' => 'Visualizar usuário',
+        ]);
     }
 
     /**
@@ -84,11 +117,14 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $path = Storage::putFile('photos', $request->photo);
+        $path = Storage::putFile('photos', $request->file('photo'));
 
         $profile = Profile::findOrFail($id);
 
-        $status = $profile->update($request->all());
+        $values = $request->all();
+        $values['photo'] = $path;
+
+        $status = $profile->update($values);
 
         if ($status) {
             session()->flash('success', 'Perfil alterado com sucesso!');

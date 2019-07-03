@@ -74,7 +74,7 @@
     <div class="form-group row">
         <label for="photo" class="col-md-3 col-form-label text-md-right">Foto</label>
         <div class="col-md-9">
-            <input id="photo" class="form-control-file" type="file" name="photo" required />
+            <input id="photo" class="form-control-file" type="file" name="photo" />
         </div>
     </div>
     <div class="form-group row">
