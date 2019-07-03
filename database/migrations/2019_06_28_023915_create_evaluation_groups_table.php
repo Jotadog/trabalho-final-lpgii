@@ -21,16 +21,18 @@ class CreateEvaluationGroupsTable extends Migration
             $table->foreign('advisor_FK')->references('id')->on('profiles');
             $table->bigInteger('appraiser2_FK')->unsigned();;
             $table->foreign('appraiser2_FK')->references('id')->on('profiles');
-            $table->string('advisor_note');
+            $table->string('advisor_note')->nullable();
             $table->string('defense_date');
             $table->string('status');
             $table->string('report_path');
-            $table->string('appraiser_note1');
-            $table->string('appraiser_note2');
+            $table->string('appraiser_note1')->nullable();
+            $table->string('appraiser_note2')->nullable();
             $table->bigInteger('company_FK')->unsigned();
             $table->foreign('company_FK')->references('id')->on('companies');
-            $table->bigInteger('profile_FK')->unsigned();;
+            $table->bigInteger('profile_FK')->unsigned();
             $table->foreign('profile_FK')->references('id')->on('profiles');
+            $table->bigInteger('internship_FK')->unsigned();
+            $table->foreign('internship_FK')->references('id')->on('internships');
             $table->timestamps();
         });
     }

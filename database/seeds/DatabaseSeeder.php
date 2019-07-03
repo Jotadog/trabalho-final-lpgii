@@ -161,6 +161,20 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
 
+        DB::table('internships')->insert([
+            [
+                'id' => 1,
+                'profile_FK' => 2,
+                'supervisor_name' => 'Supervisor',
+                'company_FK' => 1,
+                'supervisor_phone' => 35370809,
+                'supervisor_email' => 'supervisor@supervisor.com',
+                'start_date' => '2019-07-20',
+                'end_date' => '2019-12-25',
+                'advisor_FK' => 2
+            ]
+        ]);
+
         DB::table('evaluation_groups')->insert([
             [
                 'id' => 1,
@@ -174,21 +188,8 @@ class DatabaseSeeder extends Seeder
                 'appraiser_note1' => 9,
                 'appraiser_note2' => 8,
                 'company_FK' => 1,
-                'profile_FK' => 2
-            ]
-        ]);
-
-        DB::table('internships')->insert([
-            [
-                'id' => 1,
                 'profile_FK' => 2,
-                'supervisor_name' => 'Supervisor',
-                'company_FK' => 1,
-                'supervisor_phone' => 35370809,
-                'supervisor_email' => 'supervisor@supervisor.com',
-                'start_date' => '2019-07-20',
-                'end_date' => '2019-12-25',
-                'advisor_FK' => 2
+                'internship_FK' => 1
             ]
         ]);
 

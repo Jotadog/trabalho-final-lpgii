@@ -84,17 +84,14 @@ class InternshipController extends Controller
         $newCompanies = [];
         $newProfilesStudent = [];
 
-        foreach ($profiles as $value) {
+        foreach ($profiles as $value) 
             array_push($newProfiles, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
-        }
 
-        foreach ($companies as $value) {
+        foreach ($companies as $value) 
             array_push($newCompanies, ['name' => $value['name'], 'value' => $value['id']]);
-        }
 
-        foreach ($profilesStudent as $value) {
+        foreach ($profilesStudent as $value) 
             array_push($newProfilesStudent, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
-        }
 
         $datum = [
             'advisor_FK' => $newProfiles,

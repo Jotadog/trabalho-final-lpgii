@@ -66,7 +66,7 @@ class EvaluationGroupController extends Controller
         ]);
     }
 
-    public function create()
+    public function create() // verificar se o usuário é um advisor
     {
         $companies = Company::all();
         $profiles = Profile::where(['role_FK' => 3])->get();
@@ -115,18 +115,18 @@ class EvaluationGroupController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request)// verificar se o usuário é um advisor
     {
         $validator = Validator::make($request->all(), [
             'appraiser1_FK' => 'required|numeric',
             'appraiser2_FK' => 'required|numeric',
             'advisor_FK' => 'required|numeric',
-            'advisor_note' => 'required|max:191',
+            'advisor_note' => 'max:191',
             'defense_date' => 'required|max:191',
             'status' => 'required|max:191',
             'report_path' => 'required|max:191',
-            'appraiser_note1' => 'required|max:191',
-            'appraiser_note2' => 'required|max:191',
+            'appraiser_note1' => 'max:191',
+            'appraiser_note2' => 'max:191',
             'company_FK' => 'required|numeric',
             'profile_FK' => 'required|numeric',
         ]);
@@ -187,7 +187,7 @@ class EvaluationGroupController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit($id)// verificar se o usuário é um advisor
     {
         $evaluationGroup = EvaluationGroup::findOrFail($id);
         $companies = Company::all();
@@ -295,7 +295,7 @@ class EvaluationGroupController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id)// verificar se o usuário é um advisor
     {
         $evaluationGroup = EvaluationGroup::findOrFail($id);
 
@@ -329,7 +329,7 @@ class EvaluationGroupController extends Controller
         return redirect('evaluationGroups/edit', ['evaluationGroup' => $evaluationGroup]);
     }
 
-    public function destroy($id)
+    public function destroy($id)// verificar se o usuário é um advisor
     {
         EvaluationGroup::destroy($id);
         Session::flash('success', 'Banca excluída com sucesso!');
