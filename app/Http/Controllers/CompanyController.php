@@ -18,13 +18,23 @@ class CompanyController extends Controller
 
     public function index()
     {
-        $result = DB::table('companies')
+        $evaluationGroups;
+        $role = auth()->user()->profile->role->name; 
+        $id = auth()->user()->profile->id;
+
+        $companies = DB::table('companies')
             ->select('companies.*', DB::raw('count(users.id) as quantity'))
             ->leftJoin('internships', 'companies.id', '=', 'internships.company_FK')
             ->leftJoin('profiles', 'internships.profile_FK', '=', 'profiles.id')
             ->leftJoin('users', 'profiles.user_FK', '=', 'users.id')
             ->groupBy('companies.id')
             ->get();
+
+        if($role == "administrador"){       
+            $modify = [ 'create' => true, 'delete' => true, 'edit' => true ];
+        }else{
+            $modify = [ 'create' => false, 'delete' => false, 'edit' => false ];
+        }
 
         $fields = [
             'id' => '#',
@@ -36,9 +46,10 @@ class CompanyController extends Controller
 
         return view('index', [
             'fields' => $fields,
-            'data' => $result,
+            'data' => $companies,
             'controller' => 'companies',
             'title' => 'Empresas',
+            'modify' => $modify
         ]);
     }
 

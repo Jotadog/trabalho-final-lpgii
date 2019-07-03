@@ -19,8 +19,20 @@ class InternshipController extends Controller
 
     public function index()
     {
-        $internships = Internship::all();
+        $role = auth()->user()->profile->role->name; 
+        $id = auth()->user()->profile->id;
 
+        if($role == "administrador"){
+            $internships = Internship::all();
+            $modify = [ 'create' => true, 'delete' => true, 'edit' => true ];
+        }else if($role == "professor") {
+            $internships = Internship::where('advisor_FK', $id)->get();
+            $modify = [ 'create' => false, 'delete' => false, 'edit' => false ];
+        }else{
+            $internships = Internship::where('profile_FK', $id)->get();
+            $modify = [ 'create' => false, 'delete' => false, 'edit' => false ];
+        }
+        
         $fields = [
             'id' => '#',
             'student' => 'Estudante',
@@ -47,6 +59,7 @@ class InternshipController extends Controller
             'data' => $newInternships,
             'controller' => 'internships',
             'title' => 'Estágios',
+            'modify' => $modify
         ]);
     }
 

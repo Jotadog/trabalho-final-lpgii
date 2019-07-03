@@ -19,7 +19,23 @@ class EvaluationGroupController extends Controller
 
     public function index()
     {
-        $evaluationGroups = EvaluationGroup::all();
+        $evaluationGroups;
+        $role = auth()->user()->profile->role->name; 
+        $id = auth()->user()->profile->id;
+
+        if($role == "administrador"){
+            $evaluationGroups = EvaluationGroup::all();
+            $modify = [ 'create' => true, 'delete' => true, 'edit' => true ];
+        }else if($role == "professor"){
+            $evaluationGroups = EvaluationGroup::where('advisor_FK', $id)
+                ->orWhere('appraiser1_FK', $id)
+                ->orWhere('appraiser2_FK', $id)
+                ->get();
+            $modify = [ 'create' => true, 'delete' => true, 'edit' => true ];
+        }else{
+            $evaluationGroups = EvaluationGroup::where('profile_FK', $id)->get();
+            $modify = [ 'create' => false, 'delete' => false, 'edit' => false ];
+        }
 
         $fields = [
             'id' => '#',
@@ -47,6 +63,7 @@ class EvaluationGroupController extends Controller
             'data' => $newEvaluationGroups,
             'controller' => 'evaluationGroups',
             'title' => 'Bancas',
+            'modify' => $modify
         ]);
     }
 
@@ -74,17 +91,14 @@ class EvaluationGroupController extends Controller
         $newCompanies = [];
         $newProfilesStudent = [];
 
-        foreach ($profiles as $value) {
+        foreach ($profiles as $value) 
             array_push($newProfiles, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
-        }
 
-        foreach ($companies as $value) {
+        foreach ($companies as $value) 
             array_push($newCompanies, ['name' => $value['name'], 'value' => $value['id']]);
-        }
 
-        foreach ($profilesStudent as $value) {
+        foreach ($profilesStudent as $value) 
             array_push($newProfilesStudent, ['name' => $value['user']['name'], 'value' => $value['user_FK']]);
-        }
 
         $datum = [
             'advisor_FK' => $newProfiles,
